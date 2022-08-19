@@ -54,22 +54,39 @@ namespace AnimalShelter.Controllers
         }
 
 
-        // DELETE: api/Animals/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAnimal(int id)
+        // PUT: api/Animals/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutAnimal(int id, Animal animal)
         {
-            var animal = await _db.Animals.FindAsync(id);
-            if (animal == null)
+            if (id != animal.AnimalId)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            _db.Animals.Remove(animal);
-            await _db.SaveChangesAsync();
+            _db.Entry(animal).State = EntityState.Modified;
 
-            return NoContent();
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AnimalExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            // return NoContent();
+            return CreatedAtAction(nameof(GetAnimal), new { id = animal.AnimalId }, animal);
         }
 
+        
         private bool AnimalExists(int id)
         {
             return _db.Animals.Any(e => e.AnimalId == id);
