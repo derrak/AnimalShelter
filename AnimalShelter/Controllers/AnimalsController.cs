@@ -41,7 +41,34 @@ namespace AnimalShelter.Controllers
             return animal;
         }
 
+        // POST: api/Animals
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Animal>> PostAnimal([FromBody] Animal animal)
+        {
+            animal.DateCreated = DateTime.Now;
+            _db.Animals.Add(animal);
+            await _db.SaveChangesAsync();
 
+            return CreatedAtAction("GetAnimal", new { id = animal.AnimalId }, animal);
+        }
+
+
+        // DELETE: api/Animals/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAnimal(int id)
+        {
+            var animal = await _db.Animals.FindAsync(id);
+            if (animal == null)
+            {
+                return NotFound();
+            }
+
+            _db.Animals.Remove(animal);
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
 
         private bool AnimalExists(int id)
         {
