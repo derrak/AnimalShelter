@@ -86,10 +86,26 @@ namespace AnimalShelter.Controllers
             return CreatedAtAction(nameof(GetAnimal), new { id = animal.AnimalId }, animal);
         }
 
-        
+        // DELETE: api/Animals/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAnimal(int id)
+        {
+            var animal = await _db.Animals.FindAsync(id);
+            if (animal == null)
+            {
+                return NotFound();
+            }
+
+            _db.Animals.Remove(animal);
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         private bool AnimalExists(int id)
         {
             return _db.Animals.Any(e => e.AnimalId == id);
         }
+
     }
 }
