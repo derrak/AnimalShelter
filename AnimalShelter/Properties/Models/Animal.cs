@@ -16,10 +16,10 @@ namespace AnimalShelter.Models
     [Required]
     public int UserId { get; set; }
     [Required]
-    public DateTime DateCreated { get; set; }
-    [Required]
-    // public DateTime ModifiedDate { set; } = null;
     public bool Availability { get; set; } = true;
     [Required]
+    public DateTime DateCreated { get; set; }
+    [Required]
+    public DateTime DateModified { get; set; }
   }
 }
